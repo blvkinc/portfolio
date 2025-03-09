@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import './App.css';
 import Terminal from './components/Terminal';
@@ -13,7 +13,14 @@ function App() {
   const [currentPage, setCurrentPage] = useState<Page>('none');
   const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
 
+  useEffect(() => {
+    console.log('App mounted');
+    console.log('Current environment:', process.env.NODE_ENV);
+    console.log('Public URL:', process.env.PUBLIC_URL);
+  }, []);
+
   const handleCommand = (command: string) => {
+    console.log('Command received:', command);
     const cmd = command.toLowerCase().trim();
     
     switch (cmd) {
@@ -57,7 +64,15 @@ function App() {
   return (
     <div className="App">
       <div className="logo">BLVK_INC</div>
-      <img src="/bg.webp" alt="bg" className='bg-image' />
+      <img 
+        src={`${process.env.PUBLIC_URL}/bg.webp`}
+        alt="bg" 
+        className='bg-image'
+        onError={(e) => {
+          console.error('Failed to load background image');
+          console.log('Image src:', e.currentTarget.src);
+        }}
+      />
       <NoiseOverlay />
       
       <motion.div

@@ -1,11 +1,12 @@
 {
   "short_name": "blvk_inc",
-  "name": "blvk_inc",
+  "name": "blvk_inc Portfolio",
   "icons": [
     {
       "src": "cursor.svg",
       "sizes": "32x32",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "start_url": ".",

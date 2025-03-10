@@ -56,6 +56,7 @@ body, html {
   filter: brightness(0.4);
 }
 
+/* Base styles for terminal container */
 .terminal-container {
   position: absolute;
   top: 50%;
@@ -66,18 +67,19 @@ body, html {
   z-index: 3;
 }
 
+/* Base styles for page container */
 .page-container {
   position: fixed;
   top: 0;
   right: 0;
   width: 70%;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 2;
   padding: 2rem;
   color: white;
   overflow-y: auto;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .page-container h1 {
@@ -431,4 +433,68 @@ body, html {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .terminal-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease-out;
+  }
+
+  .terminal-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .page-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+    z-index: 900;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .page-container.visible {
+    transform: translateY(0);
+  }
+
+  .page-container::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+
+  .page-container.about-page,
+  .page-container.work-page,
+  .page-container.contact-page {
+    transform: translateY(0);
+  }
+
+  .page-container.about-page.hiding,
+  .page-container.work-page.hiding,
+  .page-container.contact-page.hiding {
+    transform: translateY(100%);
+  }
 }

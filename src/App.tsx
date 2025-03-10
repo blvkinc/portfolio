@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import './App.css';
 import Terminal from './components/Terminal';
@@ -12,12 +12,61 @@ type Page = 'none' | 'about' | 'work' | 'contact';
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('none');
   const [terminalHistory, setTerminalHistory] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTerminalVisible, setIsTerminalVisible] = useState(true);
+  const touchStartY = useRef(0);
+  const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('App mounted');
-    console.log('Current environment:', process.env.NODE_ENV);
-    console.log('Public URL:', process.env.PUBLIC_URL);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsTerminalVisible(currentPage === 'none');
+    }
+  }, [currentPage, isMobile]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (currentPage !== 'none') {
+      touchStartY.current = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (currentPage === 'none') return;
+    
+    const touchY = e.touches[0].clientY;
+    const diff = touchY - touchStartY.current;
+    
+    if (diff > 0 && pageRef.current) {
+      pageRef.current.style.transform = `translateY(${diff}px)`;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (currentPage === 'none') return;
+    
+    const touchY = e.changedTouches[0].clientY;
+    const diff = touchY - touchStartY.current;
+    
+    if (diff > 100) {
+      setCurrentPage('none');
+      setTerminalHistory(prev => [...prev, 'Returning to home...']);
+      if (isMobile) {
+        setIsTerminalVisible(true);
+      }
+    } else if (pageRef.current) {
+      pageRef.current.style.transform = 'translateY(0)';
+    }
+  };
 
   const handleCommand = (command: string) => {
     console.log('Command received:', command);
@@ -76,12 +125,12 @@ function App() {
       <NoiseOverlay />
       
       <motion.div
-        className='terminal-container'
+        className={`terminal-container ${!isTerminalVisible ? 'hidden' : ''}`}
         initial={{ x: '-50%', y: '-50%' }}
         animate={{
-          x: currentPage === 'none' ? '-50%' : '-150%',
-          y: '-50%',
-          scale: currentPage === 'none' ? 1 : 0.8,
+          x: currentPage === 'none' ? '-50%' : (isMobile ? '-50%' : '-150%'),
+          y: isMobile ? '20px' : '-50%',
+          scale: currentPage === 'none' ? 1 : (isMobile ? 1 : 0.8),
         }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       >
@@ -89,9 +138,35 @@ function App() {
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {currentPage === 'about' && <About />}
-        {currentPage === 'work' && <Work />}
-        {currentPage === 'contact' && <Contact />}
+        {currentPage !== 'none' && (
+          <motion.div
+            ref={pageRef}
+            className={`page-container ${currentPage}-page`}
+            initial={{ 
+              x: isMobile ? 0 : '100%',
+              opacity: 0,
+              transform: isMobile ? 'translateY(100%)' : 'none'
+            }}
+            animate={{ 
+              x: 0,
+              opacity: 1,
+              transform: isMobile ? 'translateY(0)' : 'none'
+            }}
+            exit={{ 
+              x: isMobile ? 0 : '100%',
+              opacity: 0,
+              transform: isMobile ? 'translateY(100%)' : 'none'
+            }}
+            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {currentPage === 'about' && <About />}
+            {currentPage === 'work' && <Work />}
+            {currentPage === 'contact' && <Contact />}
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

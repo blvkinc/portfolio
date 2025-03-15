@@ -113,15 +113,16 @@ function App() {
   return (
     <div className="App">
       <div className="logo">BLVK_INC</div>
-      <img 
-        src={`${process.env.PUBLIC_URL}/bg.webp`}
-        alt="bg" 
-        className='bg-image'
-        onError={(e) => {
-          console.error('Failed to load background image');
-          console.log('Image src:', e.currentTarget.src);
-        }}
-      />
+      <div className="video-background">
+        <iframe 
+          src="https://player.vimeo.com/video/1066085229?background=1&autoplay=1&loop=1&byline=0&title=0&controls=0&quality=1080p"
+          allow="autoplay; fullscreen"
+          className="bg-video"
+          title="Background Video"
+          frameBorder="0"
+          style={{ width: '177.77777778vh', /* 16:9 */ minWidth: '100vw', minHeight: '56.25vw' /* 16:9 */ }}
+        />
+      </div>
       <NoiseOverlay />
       
       <motion.div

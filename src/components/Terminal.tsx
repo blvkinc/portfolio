@@ -9,6 +9,7 @@ interface TerminalProps {
 const Terminal: React.FC<TerminalProps> = ({ onCommand, history = [] }) => {
   const [input, setInput] = useState<string>('');
   const [localHistory, setLocalHistory] = useState<string[]>(['Welcome to the terminal.', 'Type "help" for available commands']);
+  const [commandCount, setCommandCount] = useState<number>(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
 
@@ -18,14 +19,26 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history = [] }) => {
     }
   }, [localHistory, history]);
 
+  // Auto-clear local history if too many commands
+  useEffect(() => {
+    if (commandCount > 2) {
+      // Keep only the most recent command
+      const recentCommand = localHistory.filter(line => line.startsWith('>'))[commandCount - 1];
+      setLocalHistory([recentCommand]);
+      setCommandCount(1);
+    }
+  }, [commandCount, localHistory]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
       const cmd = input.trim().toLowerCase();
       if (cmd === 'clear') {
         setLocalHistory([]);
+        setCommandCount(0);
       } else {
         setLocalHistory(prev => [...prev, `> ${input}`]);
+        setCommandCount(prev => prev + 1);
       }
       onCommand(cmd);
       setInput('');
@@ -36,6 +49,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history = [] }) => {
     inputRef.current?.focus();
   };
 
+  // Combine local history with app history, but avoid duplicates
   const displayHistory = [...localHistory, ...history];
 
   return (

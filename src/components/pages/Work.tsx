@@ -1,88 +1,100 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import ProjectDetails from './ProjectDetails';
 
-interface Project {
-  id: string;
-  number: string;
+export interface Project {
+  id: number;
   title: string;
   services: string[];
   description: string;
-  image: string;
+  image?: string;
+  galleryImages?: string[];
 }
 
-const projects: Project[] = [
-  {
-    id: 'project1',
-    number: '01',
-    title: 'Project One',
-    services: ['UI Design', 'Development', 'Branding'],
-    description: 'A minimalist e-commerce platform focusing on user experience and conversion optimization. The project doubled its revenue following the launch.',
-    image: '/images/project1.jpg'
-  },
-  {
-    id: 'project2',
-    number: '02',
-    title: 'Project Two',
-    services: ['Web Design', 'UX Research', 'Digital Direction'],
-    description: 'Redesigned digital presence with focus on storytelling and brand identity. Completed in record time while maintaining high quality.',
-    image: '/images/project2.jpg'
-  },
-  {
-    id: 'project3',
-    number: '03',
-    title: 'Project Three',
-    services: ['Frontend', 'UI/UX', 'Development'],
-    description: 'An innovative web application that pushes the boundaries of interactive design while maintaining accessibility and performance.',
-    image: '/images/project3.jpg'
-  }
-];
-
 const Work: React.FC = () => {
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const projects: Project[] = [
+    {
+      id: 1,
+      title: "Portfolio Website",
+      services: ["Web Design", "Development", "UI/UX"],
+      description: "A minimalist portfolio website built with React and Framer Motion.",
+      image: "/images/project1.jpg"
+    },
+    {
+      id: 2,
+      title: "E-commerce Platform",
+      services: ["Web Development", "Backend", "API Integration"],
+      description: "A full-stack e-commerce platform with payment processing and inventory management."
+    },
+    {
+      id: 3,
+      title: "Mobile App Design",
+      services: ["UI/UX", "Mobile Design", "Prototyping"],
+      description: "A sleek mobile app design for a fitness tracking application."
+    },
+    {
+      id: 4,
+      title: "Brand Identity",
+      services: ["Branding", "Logo Design", "Style Guide"],
+      description: "Complete brand identity design for a tech startup."
+    }
+  ];
+
+  if (selectedProject) {
+    return <ProjectDetails project={selectedProject} onBack={() => setSelectedProject(null)} />;
+  }
 
   return (
-    <motion.div 
-      className="page-container work-page"
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+    <motion.div
+      className="work-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="work-header">
-        <h1>Selected work ({projects.length.toString().padStart(2, '0')})</h1>
+        <h1>Selected Projects</h1>
       </div>
-      
+
       <div className="projects-container">
-        {projects.map((project) => (
-          <motion.div 
+        {projects.map((project, index) => (
+          <motion.div
             key={project.id}
             className="project-item"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            onHoverStart={() => setHoveredProject(project.id)}
-            onHoverEnd={() => setHoveredProject(null)}
+            onMouseEnter={() => setHoveredProject(project.id)}
+            onMouseLeave={() => setHoveredProject(null)}
+            onClick={() => setSelectedProject(project)}
+            whileHover={{ x: 10 }}
+            transition={{ duration: 0.2 }}
           >
-            <div className="project-number">({project.number})</div>
+            <div className="project-number">{(index + 1).toString().padStart(2, '0')}</div>
             <div className="project-content">
               <h2>{project.title}</h2>
               <div className="project-services">
-                {project.services.map((service, index) => (
-                  <span key={index}>{service}</span>
+                {project.services.map((service, i) => (
+                  <span key={i}>{service}</span>
                 ))}
               </div>
               <p className="project-description">{project.description}</p>
+              
               <motion.div 
                 className="project-image-container"
-                initial={{ opacity: 0, height: 0 }}
+                initial={{ height: 0, opacity: 0 }}
                 animate={{ 
-                  opacity: hoveredProject === project.id ? 1 : 0,
-                  height: hoveredProject === project.id ? 300 : 0
+                  height: hoveredProject === project.id ? 'auto' : 0,
+                  opacity: hoveredProject === project.id ? 1 : 0
                 }}
                 transition={{ duration: 0.3 }}
               >
                 <div className="project-image-placeholder">
-                  <span>Image placeholder for {project.title}</span>
+                  {project.image ? (
+                    <img src={project.image} alt={project.title} />
+                  ) : (
+                    `Image placeholder for ${project.title}`
+                  )}
                 </div>
               </motion.div>
             </div>

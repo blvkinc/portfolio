@@ -259,11 +259,37 @@ body, html {
   gap: 4rem;
 }
 
+.work-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
 .work-header h1 {
   font-size: 1.5rem;
   font-weight: 400;
   letter-spacing: -0.02em;
   margin: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.work-header .back-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  position: absolute;
+  left: 0;
+}
+
+.work-header .back-button:hover {
+  color: white;
+  transform: translateX(-5px);
 }
 
 .projects-container {
@@ -568,7 +594,8 @@ body, html {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.project-details-main-image img {
+.project-details-main-image img,
+.project-details-main-image video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -624,8 +651,8 @@ body, html {
 }
 
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
@@ -637,22 +664,15 @@ body, html {
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   border-radius: 4px;
+  width: 100%;
 }
 
-.gallery-item:nth-child(1) {
-  grid-column: span 8;
-}
-
-.gallery-item:nth-child(2) {
-  grid-column: span 4;
-}
-
-.gallery-item:nth-child(3) {
-  grid-column: span 5;
-}
-
+/* Remove grid-column spans since we're using a column layout */
+.gallery-item:nth-child(1),
+.gallery-item:nth-child(2),
+.gallery-item:nth-child(3),
 .gallery-item:nth-child(4) {
-  grid-column: span 7;
+  grid-column: auto;
 }
 
 .gallery-item:hover {
@@ -661,14 +681,16 @@ body, html {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.gallery-item img {
+.gallery-item img,
+.gallery-item video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.gallery-item:hover img {
+.gallery-item:hover img,
+.gallery-item:hover video {
   transform: scale(1.05);
 }
 
@@ -739,6 +761,7 @@ body, html {
   overflow: hidden;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-content img {
@@ -746,6 +769,8 @@ body, html {
   max-width: 100%;
   max-height: 90vh;
   object-fit: contain;
+  margin: 0 auto;
+  border-radius: 4px;
 }
 
 .lightbox-placeholder {
@@ -866,4 +891,41 @@ body, html {
 .loading-percentage-symbol {
   margin-left: 2px;
   opacity: 0.7;
+}
+
+.about-header,
+.contact-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.about-header h1,
+.contact-header h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-header .back-button,
+.contact-header .back-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  position: absolute;
+  left: 0;
+}
+
+.about-header .back-button:hover,
+.contact-header .back-button:hover {
+  color: white;
+  transform: translateX(-5px);
 }

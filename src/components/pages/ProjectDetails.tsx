@@ -7,6 +7,13 @@ interface ProjectDetailsProps {
   onBack: () => void;
 }
 
+// Helper function to check if the file is a video
+const isVideoFile = (url: string): boolean => {
+  return url.toLowerCase().endsWith('.mp4') || 
+         url.toLowerCase().endsWith('.webm') || 
+         url.toLowerCase().endsWith('.ogg');
+};
+
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
@@ -29,7 +36,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
       <div className="project-details-content">
         <div className="project-details-main-image">
           {project.image ? (
-            <img src={project.image} alt={project.title} />
+            isVideoFile(project.image) ? (
+              <video 
+                src={project.image} 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
+            ) : (
+              <img src={project.image} alt={project.title} />
+            )
           ) : (
             <div className="project-image-placeholder">
               Image placeholder for {project.title}
@@ -64,7 +82,22 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
                 whileHover={{ scale: 1.02 }}
               >
                 {image ? (
-                  <img src={image} alt={`${project.title} gallery ${index + 1}`} />
+                  isVideoFile(image) ? (
+                    <video 
+                      src={image} 
+                      autoPlay 
+                      loop 
+                      muted 
+                      playsInline
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                  ) : (
+                    <img 
+                      src={image} 
+                      alt={`${project.title} gallery ${index + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                  )
                 ) : (
                   <div className="project-image-placeholder">
                     Gallery image {index + 1} for {project.title}
@@ -97,7 +130,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
                   Full size gallery image for {project.title}
                 </div>
               ) : (
-                <img src={selectedImage} alt={`${project.title} full size`} />
+                isVideoFile(selectedImage) ? (
+                  <video 
+                    src={selectedImage} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    controls
+                    style={{ width: '100%', maxHeight: '90vh' }} 
+                  />
+                ) : (
+                  <img src={selectedImage} alt={`${project.title} full size`} />
+                )
               )}
               <button className="lightbox-close" onClick={() => setSelectedImage(null)}>×</button>
             </motion.div>

@@ -11,35 +11,73 @@ export interface Project {
   galleryImages?: string[];
 }
 
-const Work: React.FC = () => {
+// Helper function to check if the file is a video
+const isVideoFile = (url: string): boolean => {
+  if (!url) return false;
+  return url.toLowerCase().endsWith('.mp4') || 
+         url.toLowerCase().endsWith('.webm') || 
+         url.toLowerCase().endsWith('.ogg');
+};
+
+interface WorkProps {
+  onBack: () => void; // Add prop for handling the back action
+}
+
+const Work: React.FC<WorkProps> = ({ onBack }) => {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const projects: Project[] = [
     {
       id: 1,
-      title: "Portfolio Website",
-      services: ["Web Design", "Development", "UI/UX"],
-      description: "A minimalist portfolio website built with React and Framer Motion.",
-      image: "/images/project1.jpg"
+      title: "Environmental Study",
+      services: ["Blender", "houdini"],
+      description: "Created using Blender and Houdini, this scene explores realistic fluid simulation and environmental interaction. The focus was on natural water behavior around static geometry, such as rocks and driftwood, with attention to surface tension, light reflection, and refraction. This project served as a technical and artistic study in achieving photorealistic water dynamics within a natural setting.",
+      image: "https://blvkportfolio.b-cdn.net/envfinal.mp4",
+      galleryImages: [
+        "https://blvkportfolio.b-cdn.net/Enviostud/envclay.png",
+        "https://blvkportfolio.b-cdn.net/Enviostud/envfinal.png"
+      ]
     },
     {
       id: 2,
-      title: "E-commerce Platform",
-      services: ["Web Development", "Backend", "API Integration"],
-      description: "A full-stack e-commerce platform with payment processing and inventory management."
+      title: "Road to Houdini",
+      services: ["Blender", "houdini"],
+      description: "This cinematic shot was crafted using a hybrid Blender and Houdini workflow to explore rigid body simulations. The scene depicts a submarine forcefully breaking through a frozen landscape, showcasing dynamic interactions between ice shards and fluid elements. The focus was on achieving realistic collision behavior, fracture dynamics, and environmental storytelling through simulation.",
+      image: "https://blvkportfolio.b-cdn.net/subsim/subsim/smosske.mp4",
+      galleryImages: [
+        "https://blvkportfolio.b-cdn.net/subsim/subsim/rKFLkoGnB8Ka307sLs9QpHNR8bA.webp",
+        "https://blvkportfolio.b-cdn.net/subsim/subsim/Vq2fIhT89zpxShcfsNTNharRKk.webp"
+      ]
     },
     {
       id: 3,
-      title: "Mobile App Design",
-      services: ["UI/UX", "Mobile Design", "Prototyping"],
-      description: "A sleek mobile app design for a fitness tracking application."
+      title: "Product Animation",
+      services: ["3D modeling", "Animation", "Commercial"],
+      description: "A curated series of product animations created in Blender, covering a wide range of industries—from sleek tech devices to vibrant beverage branding. Each animation explores different material properties, lighting setups, and dynamic motion to enhance product appeal and storytelling. This collection highlights versatility in visual direction, shading, and simulation to bring both hard-surface and liquid-based products to life.",
+      image: "https://blvkportfolio.b-cdn.net/productani/recorderthub.mp4",
+      galleryImages: [
+        "https://blvkportfolio.b-cdn.net/productani/recoder.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/mousemain.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/headphones.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/flipside.mp4"
+      ]
+    
     },
     {
       id: 4,
-      title: "Brand Identity",
-      services: ["Branding", "Logo Design", "Style Guide"],
-      description: "Complete brand identity design for a tech startup."
+      title: "Digital Fashion Simulation",
+      services: ["Blender", "Marvelous Designer"],
+      description: "A series of dress animations created using Marvelous Designer for cloth simulation and Blender for rendering and dynamics. This project focuses on achieving realistic fabric movement, draping, and collision across various dress styles. From flowing gowns to structured fashion pieces, each animation showcases attention to material behavior, physics accuracy, and visual elegance in motion."
+      ,image: "https://blvkportfolio.b-cdn.net/clothsim/dresswalk.mp4",
+      galleryImages: [
+        "https://blvkportfolio.b-cdn.net/clothsim/dresswalk.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/mousemain.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/headphones.mp4",
+        "https://blvkportfolio.b-cdn.net/productani/flipside.mp4"
+      ]
+    
+    
     }
   ];
 
@@ -56,6 +94,7 @@ const Work: React.FC = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="work-header">
+        <button className="back-button" onClick={onBack}>← Back</button>
         <h1>Selected Projects</h1>
       </div>
 
@@ -91,7 +130,18 @@ const Work: React.FC = () => {
               >
                 <div className="project-image-placeholder">
                   {project.image ? (
-                    <img src={project.image} alt={project.title} />
+                    isVideoFile(project.image) ? (
+                      <video 
+                        src={project.image} 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
+                    ) : (
+                      <img src={project.image} alt={project.title} />
+                    )
                   ) : (
                     `Image placeholder for ${project.title}`
                   )}

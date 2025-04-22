@@ -6,6 +6,10 @@ interface Skill {
   items: string[];
 }
 
+interface AboutProps {
+  onBack: () => void; // Add prop for handling the back action
+}
+
 const skills: Skill[] = [
   {
     category: 'Design & Animation',
@@ -21,24 +25,21 @@ const skills: Skill[] = [
   }
 ];
 
-const About: React.FC = () => {
+const About: React.FC<AboutProps> = ({ onBack }) => {
   return (
     <motion.div 
-      className="page-container about-page"
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      className="about-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="about-content">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          About Me
-        </motion.h1>
+      <div className="about-header">
+        <button className="back-button" onClick={onBack}>← Back</button>
+        <h1>About Me</h1>
+      </div>
 
+      <div className="about-content">
         <motion.div 
           className="about-intro"
           initial={{ opacity: 0, y: 20 }}

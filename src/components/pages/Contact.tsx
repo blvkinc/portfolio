@@ -1,16 +1,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Contact = () => {
+interface ContactProps {
+  onBack: () => void; // Add prop for handling the back action
+}
+
+const Contact: React.FC<ContactProps> = ({ onBack }) => {
   return (
     <motion.div
-      className="page-container"
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      className="contact-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <h1>Contact</h1>
+      <div className="contact-header">
+        <button className="back-button" onClick={onBack}>← Back</button>
+        <h1>Contact</h1>
+      </div>
+      
       {/* Add your contact content here */}
     </motion.div>
   );

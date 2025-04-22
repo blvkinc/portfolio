@@ -19,7 +19,7 @@ function App() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const touchStartY = useRef(0);
   const pageRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -142,15 +142,17 @@ function App() {
         <>
           <div className="logo">BLVK_INC</div>
           <div className="video-background">
-            <iframe 
+            <video
               ref={videoRef}
-              src="https://player.vimeo.com/video/1066085229?background=1&autoplay=1&loop=1&byline=0&title=0&controls=0&quality=1080p"
-              allow="autoplay; fullscreen"
+              autoPlay
+              loop
+              muted
+              playsInline
               className="bg-video"
-              title="Background Video"
-              frameBorder="0"
-              style={{ width: '177.77777778vh', /* 16:9 */ minWidth: '100vw', minHeight: '56.25vw' /* 16:9 */ }}
-            />
+              style={{ width: '177.77777778vh', minWidth: '100vw', minHeight: '56.25vw' }}
+            >
+              <source src="https://blvkportfolio.b-cdn.net/envfinal.mp4" type="video/mp4" />
+            </video>
           </div>
           <NoiseOverlay />
           
@@ -192,9 +194,18 @@ function App() {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                {currentPage === 'about' && <About />}
-                {currentPage === 'work' && <Work />}
-                {currentPage === 'contact' && <Contact />}
+                {currentPage === 'about' && <About onBack={() => {
+                  setCurrentPage('none');
+                  setIsTerminalVisible(true);
+                }} />}
+                {currentPage === 'work' && <Work onBack={() => {
+                  setCurrentPage('none');
+                  setIsTerminalVisible(true);
+                }} />}
+                {currentPage === 'contact' && <Contact onBack={() => {
+                  setCurrentPage('none');
+                  setIsTerminalVisible(true);
+                }} />}
               </motion.div>
             )}
           </AnimatePresence>

@@ -9,6 +9,7 @@ interface ProjectDetailsProps {
 
 // Helper function to check if the file is a video
 const isVideoFile = (url: string): boolean => {
+  if (!url) return false;
   return url.toLowerCase().endsWith('.mp4') || 
          url.toLowerCase().endsWith('.webm') || 
          url.toLowerCase().endsWith('.ogg');
@@ -17,8 +18,8 @@ const isVideoFile = (url: string): boolean => {
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
-  // Generate placeholder gallery images if none provided
-  const galleryImages = project.galleryImages || Array(4).fill(null);
+  // Use gallery images if provided, otherwise use an empty array
+  const galleryImages = project.galleryImages || [];
   
   return (
     <motion.div 
@@ -29,7 +30,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
       transition={{ duration: 0.3 }}
     >
       <div className="project-details-header">
-        <button className="back-button" onClick={onBack}>← Back</button>
+        <button className="back-button" onClick={onBack} aria-label="Back to projects">← Back</button>
         <h1>{project.title}</h1>
       </div>
       
@@ -43,14 +44,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
                 loop 
                 muted 
                 playsInline
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                controls
+                className="main-media"
+                onContextMenu={(e) => e.preventDefault()} 
+                controlsList="nodownload"
               />
             ) : (
-              <img src={project.image} alt={project.title} />
+              <img 
+                src={project.image} 
+                alt={`${project.title} main visual`} 
+                className="main-media" 
+                onContextMenu={(e) => e.preventDefault()} 
+                draggable="false"
+              />
             )
           ) : (
             <div className="project-image-placeholder">
-              Image placeholder for {project.title}
+              <span>No image available</span>
             </div>
           )}
         </div>
@@ -58,55 +68,66 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
         <div className="project-details-info">
           <div className="project-services-large">
             {project.services.map((service, index) => (
-              <span key={index}>{service}</span>
+              <span key={index} className="service-tag">{service}</span>
             ))}
           </div>
           
           <div className="project-description-full">
             <p>{project.description}</p>
-            <p>This is an extended description of the project that provides more details about the work, challenges faced, and solutions implemented.</p>
           </div>
         </div>
         
-        <div className="project-gallery">
-          <h2>Project Gallery</h2>
-          <div className="gallery-grid">
-            {galleryImages.map((image, index) => (
-              <motion.div 
-                key={index} 
-                className="gallery-item"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                onClick={() => setSelectedImage(image || `placeholder-${index}`)}
-                whileHover={{ scale: 1.02 }}
-              >
-                {image ? (
-                  isVideoFile(image) ? (
+        {galleryImages.length > 0 && (
+          <div className="project-gallery">
+            <h2>Project Gallery</h2>
+            <div className="gallery-grid">
+              {galleryImages.map((image, index) => (
+                <motion.div 
+                  key={index} 
+                  className="gallery-item"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  onClick={() => setSelectedImage(image)}
+                  whileHover={{ scale: 1.02 }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View larger version of gallery image ${index + 1}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedImage(image);
+                    }
+                  }}
+                >
+                  {isVideoFile(image) ? (
                     <video 
-                      src={image} 
                       autoPlay 
                       loop 
                       muted 
                       playsInline
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                    />
+                      className="gallery-media"
+                      onContextMenu={(e) => e.preventDefault()} 
+                      controlsList="nodownload"
+                    >
+                      <source src={image} type="video/mp4" />
+                    </video>
                   ) : (
                     <img 
                       src={image} 
                       alt={`${project.title} gallery ${index + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      className="gallery-media"
+                      onContextMenu={(e) => e.preventDefault()} 
+                      draggable="false"
                     />
-                  )
-                ) : (
-                  <div className="project-image-placeholder">
-                    Gallery image {index + 1} for {project.title}
+                  )}
+                  <div className="gallery-item-overlay">
+                    <span className="view-full">{isVideoFile(image) ? 'Play Video' : 'View Full'}</span>
                   </div>
-                )}
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       
       <AnimatePresence>
@@ -125,25 +146,32 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ project, onBack }) => {
               exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {selectedImage.includes('placeholder') ? (
-                <div className="lightbox-placeholder">
-                  Full size gallery image for {project.title}
-                </div>
+              {isVideoFile(selectedImage) ? (
+                <video 
+                  src={selectedImage} 
+                  autoPlay 
+                  loop 
+                  controls
+                  className="lightbox-media"
+                  onContextMenu={(e) => e.preventDefault()} 
+                  controlsList="nodownload"
+                />
               ) : (
-                isVideoFile(selectedImage) ? (
-                  <video 
-                    src={selectedImage} 
-                    autoPlay 
-                    loop 
-                    muted 
-                    controls
-                    style={{ width: '100%', maxHeight: '90vh' }} 
-                  />
-                ) : (
-                  <img src={selectedImage} alt={`${project.title} full size`} />
-                )
+                <img 
+                  src={selectedImage} 
+                  alt={`${project.title} full size view`} 
+                  className="lightbox-media" 
+                  onContextMenu={(e) => e.preventDefault()} 
+                  draggable="false"
+                />
               )}
-              <button className="lightbox-close" onClick={() => setSelectedImage(null)}>×</button>
+              <button 
+                className="lightbox-close" 
+                onClick={() => setSelectedImage(null)}
+                aria-label="Close full view"
+              >
+                ×
+              </button>
             </motion.div>
           </motion.div>
         )}

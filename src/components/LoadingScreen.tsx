@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface LoadingScreenProps {
@@ -6,9 +6,72 @@ interface LoadingScreenProps {
   videoLoaded: boolean;
 }
 
+// Function to get a random character from a defined set
+const getRandomChar = (): string => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}[]|:;"<>,.?/~`';
+  return chars.charAt(Math.floor(Math.random() * chars.length));
+};
+
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadComplete, videoLoaded }) => {
   const [progress, setProgress] = useState(0);
   const [showScreen, setShowScreen] = useState(true);
+  const [titleText, setTitleText] = useState('');
+  const [scrambleTitle, setScrambleTitle] = useState(true);
+  
+  const finalTitle = 'BLVK_INC';
+  const scrambleRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Scramble text effect for title only
+  useEffect(() => {
+    let titleIndex = 0;
+    let delay = 0;
+    
+    // Clear previous interval if it exists
+    if (scrambleRef.current) {
+      clearInterval(scrambleRef.current);
+    }
+    
+    scrambleRef.current = setInterval(() => {
+      // Title animation
+      if (scrambleTitle) {
+        const randomLength = Math.min(finalTitle.length, titleIndex + 3);
+        let newText = '';
+        
+        for (let i = 0; i < randomLength; i++) {
+          if (i < titleIndex && Math.random() > 0.3) {
+            // Keep correct character
+            newText += finalTitle[i];
+          } else {
+            // Add random character
+            newText += getRandomChar();
+          }
+        }
+        
+        setTitleText(newText);
+        
+        // Gradually reveal correct title
+        if (delay > 15) {
+          titleIndex = Math.min(titleIndex + 1, finalTitle.length);
+          if (titleIndex === finalTitle.length) {
+            // Let it scramble a bit more before settling
+            if (Math.random() > 0.7) {
+              setScrambleTitle(false);
+            }
+          }
+        }
+      } else {
+        setTitleText(finalTitle);
+      }
+      
+      delay++;
+    }, 50);
+    
+    return () => {
+      if (scrambleRef.current) {
+        clearInterval(scrambleRef.current);
+      }
+    };
+  }, [scrambleTitle]);
   
   // Simulate loading progress
   useEffect(() => {
@@ -44,7 +107,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadComplete, videoLoad
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >
       <div className="loading-content">
-        <div className="loading-title">BLVK_INC</div>
+        <div className="loading-title">{titleText || ' '}</div>
+        <div className="loading-description">Developer | Designer</div>
         
         <div className="loading-progress-container">
           <div className="loading-progress-bar">

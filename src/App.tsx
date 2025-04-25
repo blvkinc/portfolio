@@ -6,9 +6,10 @@ import NoiseOverlay from './components/NoiseOverlay';
 import About from './components/pages/About';
 import Work from './components/pages/Work';
 import Contact from './components/pages/Contact';
+import Artworks from './components/pages/Artworks';
 import LoadingScreen from './components/LoadingScreen';
 
-type Page = 'none' | 'about' | 'work' | 'contact';
+type Page = 'none' | 'about' | 'work' | 'contact' | 'artworks';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('none');
@@ -73,16 +74,23 @@ function App() {
       if (isMobile) {
         setIsTerminalVisible(false);
       }
+    } else if (commandLower === 'artworks' || commandLower === 'art') {
+      newHistory.push('Loading artworks page...');
+      setCurrentPage('artworks');
+      if (isMobile) {
+        setIsTerminalVisible(false);
+      }
     } else if (commandLower === 'clear') {
       setTerminalHistory([]);
       return;
     } else if (commandLower === 'help') {
       newHistory.push('Available commands:');
-      newHistory.push('- about: View about page');
-      newHistory.push('- work: View work page');
-      newHistory.push('- contact: View contact page');
-      newHistory.push('- clear: Clear terminal');
-      newHistory.push('- exit: Close current page');
+      newHistory.push('- about : View About Me');
+      newHistory.push('- work : View My work');
+      newHistory.push('- art : View My Artistic Projects');
+      newHistory.push('- contact : Contact Me');
+      newHistory.push('- clear : Clear terminal');
+      newHistory.push('- exit : Close current page');
     } else if (commandLower === 'exit') {
       if (currentPage !== 'none') {
         newHistory.push('Closing page...');
@@ -150,6 +158,8 @@ function App() {
               playsInline
               className="bg-video"
               style={{ width: '177.77777778vh', minWidth: '100vw', minHeight: '56.25vw' }}
+              onContextMenu={(e) => e.preventDefault()}
+              controlsList="nodownload"
             >
               <source src="https://blvkportfolio.b-cdn.net/envfinal.mp4" type="video/mp4" />
             </video>
@@ -203,6 +213,10 @@ function App() {
                   setIsTerminalVisible(true);
                 }} />}
                 {currentPage === 'contact' && <Contact onBack={() => {
+                  setCurrentPage('none');
+                  setIsTerminalVisible(true);
+                }} />}
+                {currentPage === 'artworks' && <Artworks onBack={() => {
                   setCurrentPage('none');
                   setIsTerminalVisible(true);
                 }} />}

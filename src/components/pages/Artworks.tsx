@@ -12,7 +12,7 @@ interface Artwork {
   title: string;
   description: string;
   image: string;
-  category: 'process' | 'project' | 'sound' | 'files' | 'human';
+  category: 'process' | 'project' | 'sound' | 'files' | 'human' | 'animation';
   isVideo?: boolean;
 }
 
@@ -21,18 +21,18 @@ const artworks: Artwork[] = [
 
   {
     id: '#0527',
-    date: 'May 27, 2024',
+    date: 'June 27, 2023',
     title: 'Animation Study',
-    description: 'An experimental animation exploring fluid dynamics and particle physics, showcasing the interplay between motion and form in a controlled digital space.',
+    description: 'An experimental stylized animation based off @shourthenshotty s style',
     image: 'https://blvkportfolio.b-cdn.net/misc/2_Animation_3_f69f76e172.mp4',
-    category: 'process',
+    category: 'animation',
     isVideo: true
   },
   {
     id: '#0601',
-    date: 'June 1, 2024',
-    title: 'Link Frame Animation',
-    description: 'A technical study of chain link mechanics and interconnected motion, visualizing the relationship between individual elements in a connected system.',
+    date: 'july 1, 2023',
+    title: 'Motion design',
+    description: 'Social media motion design for d3 Maven',
     image: 'https://blvkportfolio.b-cdn.net/misc/linkframe.mp4',
     category: 'project',
     isVideo: true
@@ -328,7 +328,6 @@ const Artworks: React.FC<ArtworkProps> = ({ onBack }) => {
             </div>
             <div className="artwork-info">
               <span className="artwork-id">{artwork.id}</span>
-              <span className="artwork-date">{artwork.date}</span>
             </div>
           </motion.div>
         ))}
@@ -393,10 +392,7 @@ const Artworks: React.FC<ArtworkProps> = ({ onBack }) => {
               <div className="artwork-detail-info">
                 <div className="artwork-meta">
                   <span className="artwork-id">{selectedArtwork.id}</span>
-                  <span className="artwork-date">{selectedArtwork.date}</span>
                 </div>
-                <h2 className="artwork-title">{selectedArtwork.title}</h2>
-                <p className="artwork-description">{selectedArtwork.description}</p>
               </div>
             </motion.div>
           </motion.div>

@@ -85,12 +85,12 @@ function App() {
       return;
     } else if (commandLower === 'help') {
       newHistory.push('Available commands:');
-      newHistory.push('- about : View About Me');
-      newHistory.push('- work : View My work');
-      newHistory.push('- art : View My Artistic Projects');
-      newHistory.push('- contact : Contact Me');
-      newHistory.push('- clear : Clear terminal');
-      newHistory.push('- exit : Close current page');
+      newHistory.push('- <span class="terminal-command">about</span> : View About Me');
+      newHistory.push('- <span class="terminal-command">work</span> : View My work');
+      newHistory.push('- <span class="terminal-command">art</span> : View My Artistic Projects');
+      newHistory.push('- <span class="terminal-command">contact</span> : Contact Me');
+      newHistory.push('- <span class="terminal-command">clear</span> : Clear terminal');
+      newHistory.push('- <span class="terminal-command">exit</span> : Close current page');
     } else if (commandLower === 'exit') {
       if (currentPage !== 'none') {
         newHistory.push('Closing page...');
@@ -101,7 +101,7 @@ function App() {
       }
     } else {
       newHistory.push(`Command not found: ${command}`);
-      newHistory.push('Type "help" for available commands.');
+      newHistory.push('Type "<span class="terminal-command">help</span>" for available commands.');
     }
     
     setTerminalHistory(newHistory);

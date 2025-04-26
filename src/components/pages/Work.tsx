@@ -93,6 +93,24 @@ const Work: React.FC<WorkProps> = ({ onBack }) => {
     },
     {
       id: 4,
+      title: "Vfx",
+      services: ["Blender", "Product","Animation"],
+      description: "This collection of CGI ads was created using Blender to bring products to life through detailed modeling, realistic materials, and dynamic animation. Each piece focuses on blending strong visual storytelling with high-end design, showcasing products in carefully crafted environments that highlight their features and appeal."
+      ,image: "https://blvkportfolio.b-cdn.net/vfx/test.mp4",
+      galleryImages: [
+        "https://blvkportfolio.b-cdn.net/vfx/test3_postprocress.mp4",
+       "https://blvkportfolio.b-cdn.net/vfx/test4_postprocess.mp4",
+       "https://blvkportfolio.b-cdn.net/vfx/test%202.mp4",
+       "https://blvkportfolio.b-cdn.net/vfx/scene_2_.mp4",
+       "https://blvkportfolio.b-cdn.net/vfx/render%20final.mp4",
+       "https://blvkportfolio.b-cdn.net/vfx/oatlife.mp4"
+        
+      ]
+     
+     
+    },
+    {
+      id: 4,
       title: "The Dubai Collection",
       services: ["Blender", "commercial"],
       description: "This 3D environment was created as a visual concept for The Dubai Collection, an archive-style website dedicated to showcasing vintage comic books. The scene is designed to represent a child's nostalgic bedroom—filled with collectibles, comic issues, action figures, and subtle lighting that captures the essence of late-night comic book reading.he website featured on the screen is a fictional landing page built into the scene to demonstrate the collection’s potential digital presentation. Modeled and rendered entirely in Blender using Cycles, with careful attention to storytelling through prop placement, lighting, and mood."
@@ -137,7 +155,8 @@ const Work: React.FC<WorkProps> = ({ onBack }) => {
       ]
      
      
-    }
+    },
+  
   ];
 
   if (selectedProject) {

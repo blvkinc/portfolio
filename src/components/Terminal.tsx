@@ -8,7 +8,7 @@ interface TerminalProps {
 
 const Terminal: React.FC<TerminalProps> = ({ onCommand, history = [] }) => {
   const [input, setInput] = useState<string>('');
-  const [localHistory, setLocalHistory] = useState<string[]>(['Welcome to the terminal.', 'Type "help" for available commands']);
+  const [localHistory, setLocalHistory] = useState<string[]>(['Welcome to the terminal.', 'Type "<span class="terminal-command">help</span>" for available commands']);
   const [commandCount, setCommandCount] = useState<number>(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -65,7 +65,15 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand, history = [] }) => {
               transition={{ duration: 0.2, delay: index * 0.05 }}
               className="terminal-line"
             >
-              {line}
+              {line.startsWith('>') ? (
+                <span className="terminal-command">{line}</span>
+              ) : (
+                line.includes('<span') ? (
+                  <div dangerouslySetInnerHTML={{ __html: line }} />
+                ) : (
+                  line
+                )
+              )}
             </motion.div>
           ))}
         </AnimatePresence>

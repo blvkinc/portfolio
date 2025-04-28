@@ -103,7 +103,7 @@ const Work: React.FC<WorkProps> = ({ onBack }) => {
        "https://blvkportfolio.b-cdn.net/vfx/test%202.mp4",
        "https://blvkportfolio.b-cdn.net/vfx/scene_2_.mp4",
        "https://blvkportfolio.b-cdn.net/vfx/render%20final.mp4",
-       "https://blvkportfolio.b-cdn.net/vfx/oatlife.mp4"
+       "https://blvkportfolio.b-cdn.net/vfx/car.mp4"
         
       ]
      
